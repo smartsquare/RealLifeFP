@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -65,6 +66,16 @@ public class Java8Test {
             .map( file -> file.getName() )
             .collect( Collectors.toList() );
 
-        assertThat( names, hasSize( 4 ) );
+        assertThat( names, hasSize( files.size() ) );
+    }
+
+    @Test
+    public void index()
+        throws Exception {
+        Map<Boolean, List<File>> isDirectoryMap = files.stream()
+            .collect( Collectors.groupingBy( File::isDirectory ) );
+
+        assertThat( isDirectoryMap.get( true ), hasSize( 2 ) );
+        assertThat( isDirectoryMap.get( false ), hasSize( 3 ) );
     }
 }

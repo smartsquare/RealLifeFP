@@ -19,8 +19,10 @@ import org.junit.rules.ExpectedException;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimaps;
 
 public class GuavaTest {
 
@@ -119,7 +121,21 @@ public class GuavaTest {
             }
         } );
 
-        assertThat( Lists.newArrayList( names ), hasSize( 4 ) );
+        assertThat( Lists.newArrayList( names ), hasSize( files.size() ) );
+    }
+
+    @Test
+    public void index()
+        throws Exception {
+        ImmutableListMultimap<Boolean, File> isDirectoryMap = Multimaps.index( files, new Function<File, Boolean>() {
+            @Override
+            public Boolean apply( File input ) {
+                return input.isDirectory();
+            }
+        } );
+
+        assertThat( isDirectoryMap.get( true ), hasSize( 2 ) );
+        assertThat( isDirectoryMap.get( false ), hasSize( 3 ) );
     }
 
 }
